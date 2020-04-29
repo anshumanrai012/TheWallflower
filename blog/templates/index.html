@@ -2,6 +2,17 @@
 {% block title %}The Wallflower - Home{% endblock %}
 {% block content %}
 
+{% if fill_author_details %}
+
+<div class="alert alert-danger" role="alert">
+
+    <center style="font-size:13px;"> Hi {{ user }} ! Welcome. Your account is not activated. Click <a
+            href="{% url 'activate-account' %}">here</a>
+        to activate. Please note that most of the features will remain disabled until you activate your account.
+    </center>
+</div>
+{% endif %}
+
 
 You have visited this page {{ num_visits }} times.
 

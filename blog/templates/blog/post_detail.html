@@ -26,8 +26,13 @@
                     </svg>
                     <a
                             href="{% url 'author-detail' post.author.pk %}">{{ object.author }}</a></p>
-
-                <p><i>"{{ object.summary }}"</i></p>
+                <div>
+                    {% for item in object.tag.all %}
+                    <a href="{% url 'posts-by-tag' item %}" class="badge badge-light">{{item}}</a>
+                    {% endfor %}
+                </div>
+                <br>
+                <p><i style="font-size:13px;">"{{ object.summary }}"</i></p>
                 <hr>
 
                 <p>

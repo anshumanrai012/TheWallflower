@@ -17,6 +17,12 @@ STATUS_CHOICES = (
     ('a', 'Archived')
 )
 
+GENDER_CHOICES = (
+    ('m', 'Male'),
+    ('f', 'Female'),
+    ('o', 'Others')
+)
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
@@ -61,6 +67,7 @@ class Author(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True)
     email = models.EmailField(null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     bio = models.TextField(max_length=2000)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)

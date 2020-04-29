@@ -20,7 +20,7 @@ urlpatterns += [
 
 # URLs for Author
 urlpatterns += [
-    path('profile/', views.AuthorCreate.as_view(), name='edit-profile'),
+    path('account/activate/', views.AuthorCreate.as_view(), name='activate-account'),
     path('blog/authors/', views.AuthorListView.as_view(), name='all-authors'),
     path('author/<int:pk>/', views.AuthorDetailView.as_view(), name='author-detail'),
     path('author/edit/<int:pk>/', views.AuthorUpdateView.as_view(), name='author_edit'),
@@ -35,10 +35,13 @@ urlpatterns += [
 
 # URLs for Profile
 urlpatterns += [
-    path('blog/profile/', views.user_profile, name='profile'),
+    path('blog/<slug:user>/', views.user_profile, name='profile'),
     path('blog/post/<int:pk>/edit', views.PostUpdateView.as_view(), name='update-post'),
     path('blog/post/<int:pk>/delete', views.PostDeleteView.as_view(), name='delete-post')
+]
 
 
+urlpatterns += [
+    path('blog/posts/<slug:item>/', views.get_post_by_tag, name='posts-by-tag'),
 
 ]

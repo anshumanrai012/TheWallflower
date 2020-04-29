@@ -2,6 +2,23 @@
 
 {% block content %}
 
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <center>
+            <svg class="bi bi-cursor-fill" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M14.082 2.182a.5.5 0 01.103.557L8.528 15.467a.5.5 0 01-.917-.007L5.57 10.694.803 8.652a.5.5 0 01-.006-.916l12.728-5.657a.5.5 0 01.556.103z"
+                      clip-rule="evenodd"/>
+            </svg>
+            Create a new post
+        </center>
+        <hr>
+    </div>
+    <div class="col-md-4"></div>
+
+</div>
 {% if form.errors %}
 {% for field in form %}
 {% for error in field.errors %}
@@ -33,7 +50,8 @@
 
     <div class="form-group">
         <label for="summary">Summary</label>
-        <input required type="text" class="form-control" id="summary" name="summary" placeholder="Enter post summary">
+        <input required type="text" class="form-control" id="summary" name="summary"
+               placeholder="Enter post summary">
     </div>
 
     <div class="form-group">
@@ -45,7 +63,14 @@
         </select>
     </div>
 
-    <button type="submit" class="btn btn-primary">Post</button>
+    <button type="submit" class="btn btn-primary">Post
+        <svg class="bi bi-cursor-fill" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+                  d="M14.082 2.182a.5.5 0 01.103.557L8.528 15.467a.5.5 0 01-.917-.007L5.57 10.694.803 8.652a.5.5 0 01-.006-.916l12.728-5.657a.5.5 0 01.556.103z"
+                  clip-rule="evenodd"/>
+        </svg>
+    </button>
 
 </form>
 

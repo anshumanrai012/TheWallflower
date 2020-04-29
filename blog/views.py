@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView, DeleteView, UpdateView
 from .models import Post, Author, Tag
-from .forms import AuthorForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 import operator
 from django.db.models import Q
@@ -17,11 +16,26 @@ def index(request):
     num_authors = Author.objects.count()
     num_visits = request.session.get('num_visits', 0)
     request.session['num_visits'] = num_visits + 1
+    author_details = None
+
+    if request.user.is_authenticated:
+        user_id = User.objects.filter(username=request.user).values('id')[0]['id']
+        author_details = Author.objects.filter(username_id=user_id)
+        author_details_count = Author.objects.filter(username_id=user_id).count()
+
+        if author_details_count == 1:
+            fill_author_details = False
+        else:
+            fill_author_details = True
+
+    else:
+        fill_author_details = False
 
     return render(
         request,
         'index.html',
-        context={'num_posts': num_posts, 'num_authors': num_authors, 'num_visits': num_visits},
+        context={'num_posts': num_posts, 'num_authors': num_authors, 'num_visits': num_visits,
+                 'author_details': author_details, 'fill_author_details': fill_author_details},
     )
 
 
@@ -86,8 +100,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 
 class AuthorCreate(LoginRequiredMixin, CreateView):
     model = Author
-    template_name = 'blog/author_form.html'
-    fields = ('username', 'name', 'email')
+    fields = ['name', 'email', 'bio', 'gender']
     login_url = 'login'
 
     def form_valid(self, form):
@@ -101,11 +114,9 @@ class AuthorDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
 
     def get_context_data(self, **kwargs):
-        print(self.object)
         context = super(AuthorDetailView, self).get_context_data(**kwargs)
         post_count_by_author = Post.objects.filter(author_id=self.object.username_id).count()
-        posts = Post.objects.filter(author_id=self.object.username_id).values('id', 'title', 'post_content', 'summary',
-                                                                              'created_at')
+        posts = Post.objects.filter(author_id=self.object.username_id)
         context['authors_posts'] = posts
         context['post_count_by_author'] = post_count_by_author
         return context
@@ -150,14 +161,37 @@ class TagDetailView(DetailView):
     model = Tag
 
 
-def user_profile(request):
+def user_profile(request, user):
     user_id = User.objects.filter(username=request.user).values('id')[0]['id']
     posts = Post.objects.filter(author_id=user_id)
     num_posts = Post.objects.filter(author_id=user_id).count()
-    author = Author.objects.filter(username_id=user_id).values('id', 'name', 'bio')
+    author = Author.objects.filter(username_id=user_id).values('id', 'name', 'bio', 'email', 'gender')
 
     return render(
         request,
         'blog/profile.html',
         context={'num_posts': num_posts, 'posts': posts, 'author': author},
+    )
+
+
+def get_tag_id_by_name(name):
+    tag_id = Tag.objects.filter(name=name).values('id')[0]['id']
+
+    return tag_id
+
+
+def get_post_by_tag(request, item):
+    posts_under_tag = []
+    print(item)
+    tag_id = get_tag_id_by_name(item)
+    post_ids = Post.tag.through.objects.filter(tag_id=tag_id).values('post_id')
+    for val in post_ids:
+        post_item = Post.objects.filter(id=val['post_id'])
+        posts_under_tag.append(post_item)
+
+    print(posts_under_tag)
+    return render(
+        request,
+        'blog/posts_by_tag.html',
+        context={'posts_under_tag': posts_under_tag, 'tag_name': item},
     )

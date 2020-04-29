@@ -15,7 +15,7 @@
                 <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
             </svg>
         </center>
-        <center><a href="{{ tag.get_absolute_url }}"><h5>{{ tag.name }}</h5></a></center>
+        <center><a href="{% url 'posts-by-tag' tag.name %}"><h5>{{ tag.name }}</h5></a></center>
 
 
     </div>
