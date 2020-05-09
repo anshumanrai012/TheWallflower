@@ -4,11 +4,12 @@
 
 <h1>Delete Post</h1>
 
-<p>Are you sure you want to delete the Post: {{ Post }}?</p>
+<p>Are you sure you want to delete the Post:<b> {{ post }}?</b></p>
 
-<form action="" method="POST">
+<form class="form-group" action="" method="POST">
   {% csrf_token %}
-  <input type="submit" action="" value="Yes, delete." />
+  <input class="btn btn-danger" type="submit" action="" value="Yes, delete." />
+  <a class="btn btn-success" href="{% url 'index' %}" >No, back to homepage</a>
 </form>
 
 {% endblock %}

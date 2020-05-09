@@ -1,82 +1,188 @@
 <!-- templates/post_detail.html -->
 {% extends 'base.html' %}
 {% block content %}
-
+<style>
+   .blog-poast-info {
+   border-top: 1px solid #aeaeae;
+   padding: 1em 0;
+   text-align: left;
+   .blog-poast-info ul li {
+   display:inline-table;
+   margin-right: 1em;
+   }
+</style>
 <main role="main" class="container">
-    <div class="row">
-        <div class="col-md-9 blog-main">
-            <div class="blog-post">
-                <h2 class="blog-post-title">{{ object.title }}</h2>
-                <p class="blog-post-meta">
-                    <svg class="bi bi-calendar" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                              d="M14 0H2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"
-                              clip-rule="evenodd"/>
-                        <path fill-rule="evenodd"
-                              d="M6.5 7a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                    {{ object.created_at }}
-                    <svg class="bi bi-person-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                              d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 100-6 3 3 0 000 6z"
-                              clip-rule="evenodd"/>
-                    </svg>
-                    <a
-                            href="{% url 'author-detail' post.author.pk %}">{{ object.author }}</a></p>
-                <div>
-                    {% for item in object.tag.all %}
-                    <a href="{% url 'posts-by-tag' item %}" class="badge badge-light">{{item}}</a>
-                    {% endfor %}
-                </div>
-                <br>
-                <p><i style="font-size:13px;">"{{ object.summary }}"</i></p>
-                <hr>
-
-                <p>
-                    {% autoescape off %}
-                    {{ object.post_content }}
-                    {% endautoescape %}
-
-                </p>
-
-            </div><!-- /.blog-post -->
-
-
-        </div><!-- /.blog-main -->
-
-        <aside class="col-md-3 blog-sidebar">
-            <div class="p-3 mb-3 bg-light rounded">
-                <h4 class="font-bold">{% for i in author %} {{ i.name }} {% endfor %}</h4>
-                <p class="mb-0 font-italic" style="font-size:13px;">{% for i in author %} {{ i.bio }} {% endfor %}</p>
+   <div class="row">
+      <div class="col-md-9 blog-main">
+         <div class="blog-post">
+            <h2 class="blog-post-title">{{ object.title }}</h2>
+            <p class="blog-post-meta">
+               <svg class="bi bi-calendar" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                     d="M14 0H2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V2a2 2 0 00-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"
+                     clip-rule="evenodd"/>
+                  <path fill-rule="evenodd"
+                     d="M6.5 7a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm-9 3a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2zm3 0a1 1 0 100-2 1 1 0 000 2z"
+                     clip-rule="evenodd"/>
+               </svg>
+               {{ object.created_at }}
+               <svg class="bi bi-person-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                     d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 100-6 3 3 0 000 6z"
+                     clip-rule="evenodd"/>
+               </svg>
+               <a
+                  href="{% url 'author-detail' username_id %}">{{ object.author }}</a>
+            </p>
+            <div>
+               <svg class="bi bi-tag-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                     d="M2 1a1 1 0 00-1 1v4.586a1 1 0 00.293.707l7 7a1 1 0 001.414 0l4.586-4.586a1 1 0 000-1.414l-7-7A1 1 0 006.586 1H2zm4 3.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"
+                     clip-rule="evenodd"/>
+               </svg>
+               {% for item in object.tag.all %}
+               <a href="{% url 'posts-by-tag' item %}" class="badge badge-light">{{item}}</a>
+               {% endfor %}
             </div>
+            <br>
+            <p><i style="font-size:13px;">"{{ object.summary }}"</i></p>
+            <hr>
+            <p>
+               {% autoescape off %}
+               {{ object.post_content }}
+               {% endautoescape %}
+            </p>
+         </div>
+         <div class="blog-poast-info">
+            <div class="row">
+               <div class="col-md-3 text-center">
+                  {% if is_liked %}
+                  <a style="color:green;text-decoration:none" class="admin"
+                     href="{% url 'unlike-post' object.slug %}">{{ like_count }} &#128154; </a>
+                  {% else %}
+                  <a style="color:green;text-decoration:none" class="admin"
+                     href="{% url 'like-post' object.slug %}">
+                     {{ like_count }}
+                     <svg class="bi bi-heart" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                           d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 01.176-.17C12.72-3.042 23.333 4.867 8 15z"
+                           clip-rule="evenodd"/>
+                     </svg>
 
-            <div class="p-3">
-                <h4 class="font-italic">You may also like</h4>
-                <ol class="list-unstyled mb-0">
-                    {% for post in authors_posts %}
-                    <span style="font-size:12px;">
-                        <li>
-                            <svg class="bi bi-check" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
-                                 xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd"
-        d="M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z"
-        clip-rule="evenodd"/>
-</svg>
-                            <a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a></li>
-                    </span>
-                    {% endfor %}
-
-                </ol>
+                  </a>
+                  {% endif %}
+               </div>
+               <div class="col-md-3 text-center">
+                  <span style="color:green;text-decoration:none" class="admin" href="#">{{ comment_count }} &#x1F4AC; </span>
+               </div>
+               <div class="col-md-3 text-center">
+                  <span style="color:green;text-decoration:none" class="admin"
+                     href="#">{{ views_count }} 👁 </span>
+               </div>
+               <div class="col-md-3 text-center">
+                  <a style="color:green;text-decoration:none" class="admin" href="#">Share</a>
+               </div>
             </div>
+         </div>
 
+         <div class="blog-poast-info"></div>
+         <!-- Comments Form -->
+         <form method="post" action="{% url 'add-comment' object.slug %}">
+            {% csrf_token %}
+            <div class="form-group">
+               <textarea style="border-radius: 2rem;padding:15px; background-color:#f9faf7"
+                  onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }"
+                  name="comment" id="textarea" class="form-control" placeholder="Write a comment..."
+                  rows="1"></textarea>
+            </div>
+         </form>
+         <br>
+         <!-- Single Comment -->
+         {% for comment in comments %}
+         <!-- Comment with nested comments -->
+         <div class="media mb-4">
+            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+            <div class="media-body">
+               <div style="border-radius: 2rem; padding:15px; background-color:#f9faf7">
+                  <h6 class="mt-0">{{ comment.comment_by }}</h6>
+                  {{ comment.comment }}
+               </div>
 
-        </aside><!-- /.blog-sidebar -->
+                <input type="button" class="btn btn-sm" style="margin-top:5px;"  name="answer" value="Reply" onclick="showDiv{{ comment.pk }}()"/>
+               {% if user == comment.comment_by %}
 
-    </div><!-- /.row -->
+                <a class="btn btn-sm" href="{% url 'delete-comment' comment.pk %}" style="margin-top:5px;">Delete</a>
+               {% endif %}
 
-</main><!-- /.container -->
+                <form method="post" action="{% url 'add-reply' comment.pk %}">
+                    {% csrf_token %}
+                    <div id="{{ comment.pk }}" style="margin-top:10px; display:none;" class="form-group">
 
+                     <textarea style="border-radius: 2rem;padding:15px; background-color:#f9faf7"
+                               onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }"
+                               name="reply" class="form-control" placeholder="Write a reply..."
+                               rows="1"></textarea>
+                    </div>
+                </form>
+                <script>
+                function showDiv{{ comment.pk }}() {
+                document.getElementById('{{ comment.pk }}').style.display = "block";
+                }
+                </script>
+               {% for key, value in dict_replies.items %}
+               {% if key == comment.pk %}
+               {% for reply in value %}
+               <div class="media mt-4">
+                  <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                  <div class="media-body">
+                     <div style="border-radius: 2rem; padding:15px; background-color:#f9faf7">
+                        <h6 class="mt-0">{{ reply.replied_by }}</h6>
+                        {{ reply.reply }}
+                     </div>
+                     {% if user == reply.replied_by %}
+                     <a class="btn btn-sm" href="{% url 'delete-reply' reply.pk %}" style="margin-top:5px;">Delete</a>
+                     {% endif %}
+                  </div>
+               </div>
+               {% endfor %}
+               {% endif %}
+               {% endfor %}
+            </div>
+         </div>
+         {% endfor %}
+      </div>
+      <!-- /.blog-main -->
+      <aside class="col-md-3 blog-sidebar">
+         <div class="p-3 mb-3 bg-light rounded">
+            <h4 class="font-bold">{% for i in author %} {{ i.name }} {% endfor %}</h4>
+            <p class="mb-0 font-italic" style="font-size:13px;">{% for i in author %} {{ i.bio }} {% endfor %}</p>
+         </div>
+         <div class="p-3">
+            <h4 class="font-italic">You may also like</h4>
+            <ol class="list-unstyled mb-0">
+               {% for post in authors_posts %}
+               <span style="font-size:12px;">
+                  <li>
+                     <svg class="bi bi-check" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                           d="M13.854 3.646a.5.5 0 010 .708l-7 7a.5.5 0 01-.708 0l-3.5-3.5a.5.5 0 11.708-.708L6.5 10.293l6.646-6.647a.5.5 0 01.708 0z"
+                           clip-rule="evenodd"/>
+                     </svg>
+                     <a href="{% url 'post-detail' post.slug %}">{{ post.title }}</a>
+                  </li>
+               </span>
+               {% endfor %}
+            </ol>
+         </div>
+      </aside>
+      <!-- /.blog-sidebar -->
+   </div>
+   <!-- /.row -->
+</main>
+<!-- /.container -->
 {% endblock content %}
