@@ -82,22 +82,41 @@
         </a>
     </center>
     <hr>
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
 
-    <div>
-        <center>
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button class="btn  btn-sm btn btn-outline-primary" onclick="openPage('About', this, '')">About</button>
-                <button class="btn btn btn-outline-primary" onclick="openPage('Posts', this, '')" id="defaultOpen">Posts
-                </button>
-                <button class="btn btn btn-outline-primary" onclick="openPage('Followers', this, '')">Followers</button>
-                <button class="btn btn btn-outline-primary" onclick="openPage('Followings', this, '')">Followings
-                </button>
-                <button class="btn btn btn-outline-primary" onclick="openPage('Likes', this, '')">Likes</button>
-                <button class="btn btn btn-outline-primary" onclick="openPage('Archives', this, '')">Archives</button>
-                <button class="btn btn btn-outline-primary" onclick="openPage('Archives', this, '')">Drafts</button>
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav justify-content-between">
+
+                    <a class="nav-item nav-link" onclick="openPage('About', this, '')" id="defaultOpen">About</a>
+                    <a class="nav-item nav-link" onclick="openPage('Posts', this, '')">
+                        Posts
+                    </a>
+                    <a class="nav-item nav-link" onclick="openPage('Followers', this, '')">Followers
+                    </a>
+                    <a class="nav-item nav-link" onclick="openPage('Followings', this, '')">Followings
+                    </a>
+                    <a class="nav-item nav-link" onclick="openPage('Likes', this, '')">Likes</a>
+                    <a class="nav-item nav-link" onclick="openPage('Archives', this, '')">Archives</a>
+                    <a class="nav-item nav-link" onclick="openPage('Archives', this, '')">Drafts</a>
+
+                </div>
             </div>
-        </center>
+
+        </nav>
+
     </div>
+    <div class="col-md-3"></div>
+
+</div>
     <br>
 
     <div id="About" class="tabcontent">
@@ -175,18 +194,7 @@
                         <div class="mb-1 text-muted">{{ p.created_at }}</div>
                         <p class="card-text mb-auto"><i style="font-size:13px;">{{ p.summary|truncatechars:100 }}</i>
                         </p>
-
-                    </div>
-                    <div class="col-auto d-none d-lg-block">
-                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                             preserveAspectRatio="xMidYMid slice" focusable="false" role="img"
-                             aria-label="Placeholder: Thumbnail">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="#55595c"/>
-                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                        </svg>
-                    </div>
-                    <div>
+                        <div >
                         <a style="text-decoration:none;" href="{% url 'update-post' p.pk %}"> &nbsp;
                             <svg class="bi bi-pencil" width="1em" height="1em" viewBox="0 0 16 16"
                                  fill="currentColor"
@@ -225,6 +233,12 @@
                             Archive
                         </a>
                     </div>
+
+                    </div>
+                    <div class="col-auto d-none d-lg-block">
+                        <img class="bd-placeholder-img"  width="200" height="250" src="\media\{{ p.display_image }}" alt="Card image cap">
+                    </div>
+
                 </div>
             </div>
             {% endfor%}
@@ -276,13 +290,7 @@
 
                     </div>
                     <div class="col-auto d-none d-lg-block">
-                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                             preserveAspectRatio="xMidYMid slice" focusable="false" role="img"
-                             aria-label="Placeholder: Thumbnail">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="#55595c"/>
-                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                        </svg>
+                        <img class="bd-placeholder-img"  width="200" height="250" src="\media\{{ p.display_image }}" alt="Card image cap">
                     </div>
 
                     <div>
@@ -493,13 +501,7 @@
 
                     </div>
                     <div class="col-auto d-none d-lg-block">
-                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                             preserveAspectRatio="xMidYMid slice" focusable="false" role="img"
-                             aria-label="Placeholder: Thumbnail">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="#55595c"/>
-                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                        </svg>
+                         <img class="bd-placeholder-img"  width="200" height="250" src="\media\{{ p.post.display_image }}" alt="Card image cap">
                     </div>
 
                 </div>
@@ -530,6 +532,7 @@
      tablinks = document.getElementsByClassName("tablink");
      for (i = 0; i < tablinks.length; i++) {
        tablinks[i].style.backgroundColor = "";
+
      }
      document.getElementById(pageName).style.display = "block";
      elmnt.style.backgroundColor = color;

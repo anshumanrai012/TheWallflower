@@ -9,13 +9,36 @@
    .blog-poast-info ul li {
    display:inline-table;
    margin-right: 1em;
-   }
+   };
+
 </style>
 <main role="main" class="container">
    <div class="row">
       <div class="col-md-9 blog-main">
          <div class="blog-post">
-            <h2 class="blog-post-title">{{ object.title }}</h2>
+            <div class="row">
+               <div class="col-md-10">
+                  <h2 class="blog-post-title">{{ object.title }}</h2>
+               </div>
+               <div class="col-md-2">
+                  <div class="text-right">
+
+                     <a type="button" class="btn btn-sm" data-toggle="popover"
+                        data-content="
+                        {% if object.author == user %}<div><a href='{% url 'update-post' object.pk %}'> Edit Post</a></div></div><a href='{% url 'delete-post' object.pk %}'>Delete Post</a></div><div><a href='{% url 'mark-archive' object.pk %}'>Archive Post</a></div><hr>{% endif %}
+                        <div><a href='{% url 'update-post' object.pk %}'>Bookmark this Post</a></div><div><a href='{% url 'update-post' object.pk %}'>Share</a></div><div><a href='{% url 'update-post' object.pk %}'>Report Post</a></div>"
+                        data-html="true">
+                        <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                           <path fill-rule="evenodd"
+                                 d="M3 9.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm5 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
+                                 clip-rule="evenodd"/>
+                        </svg>
+                     </a>
+                  </div>
+               </div>
+            </div>
+
             <p class="blog-post-meta">
                <svg class="bi bi-calendar" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
                   xmlns="http://www.w3.org/2000/svg">
@@ -33,8 +56,11 @@
                      d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 100-6 3 3 0 000 6z"
                      clip-rule="evenodd"/>
                </svg>
-               <a
-                  href="{% url 'author-detail' username_id %}">{{ object.author }}</a>
+               {% if object.author == user %}
+               <a href="{% url 'profile' user.get_username %}">{{ object.author }} </a>
+               {% else %}
+               <a href="{% url 'author-detail' username_id %}">{{ object.author }}</a>
+               {% endif %}
             </p>
             <div>
                <svg class="bi bi-tag-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
@@ -50,6 +76,10 @@
             <br>
             <p><i style="font-size:13px;">"{{ object.summary }}"</i></p>
             <hr>
+            <div class="text-center">
+               <img  src="\media\{{ object.display_image }}" width="100%;" style="border: 3px solid #ddd; border-radius: 4px;padding: 5px;">
+               <p class="text-muted" style="font-size:10px;">( {{ object.image_caption }} )</p>
+            </div>
             <p>
                {% autoescape off %}
                {{ object.post_content }}
@@ -108,7 +138,8 @@
             <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
             <div class="media-body">
                <div style="border-radius: 2rem; padding:15px; background-color:#f9faf7">
-                  <h6 class="mt-0">{{ comment.comment_by }}</h6>
+                  <h6 class="mt-0"><a href="{% url 'author-detail' comment.comment_by.pk %}"> {{ comment.comment_by }}</a> . <span style="font-size:10px;" class="text-muted">{{ comment.comment_at }}</span></h6>
+
                   {{ comment.comment }}
                </div>
 
@@ -140,7 +171,7 @@
                   <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                   <div class="media-body">
                      <div style="border-radius: 2rem; padding:15px; background-color:#f9faf7">
-                        <h6 class="mt-0">{{ reply.replied_by }}</h6>
+                        <h6 class="mt-0"><a href="{% url 'author-detail' reply.replied_by.pk %}">{{ reply.replied_by }}</a> . <span style="font-size:10px;" class="text-muted">{{ reply.replied_at }}</span></h6>
                         {{ reply.reply }}
                      </div>
                      {% if user == reply.replied_by %}

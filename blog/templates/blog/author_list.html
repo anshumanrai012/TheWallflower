@@ -41,7 +41,13 @@
                 <text x="50%" y="50%" fill="#777" dy=".3em">140x140</text>
             </svg>
         </center>
-        <center><a href="{{ author.get_absolute_url }}"><h6>{{ author.name }} </h6></a>
+        <center>
+            {% if author.username == user %}
+            <a href="{% url 'profile' user.get_username %}"><h6>{{ author.name }} </h6></a>
+            {% else %}
+            <a href="{{ author.get_absolute_url }}"><h6>{{ author.name }} </h6></a>
+            {% endif %}
+
             <p>({{author.username}})</p></center>
 
     </div>

@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 import pytz
@@ -47,6 +48,8 @@ class Post(models.Model):
     tag = models.ManyToManyField(Tag, null=True, blank=True)
     archived_at = models.DateTimeField(null=True, blank=True)
     drafted_at = models.DateTimeField(blank=True, null=True)
+    display_image = models.ImageField(upload_to='media')
+    image_caption = models.CharField(max_length=200, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('post-detail', args=[str(self.slug)])
@@ -87,6 +90,7 @@ class Author(models.Model):
 
     class Meta:
         ordering = ['name']
+
 
 
 class PostLike(models.Model):

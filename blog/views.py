@@ -11,14 +11,12 @@ from django.db.models import Q, Count
 from blog.common_views import get_common_data
 from .forms import AuthorForm
 from django.utils import timezone
+from datetime import datetime, timedelta
 
 
 def index(request):
-    num_posts = Post.objects.all().count()
-    num_authors = Author.objects.count()
-    num_visits = request.session.get('num_visits', 0)
-    request.session['num_visits'] = num_visits + 1
     author_details = None
+    recent_posts = get_common_data.get_recent_post()
 
     if request.user.is_authenticated:
         user_id = User.objects.filter(username=request.user).values('id')[0]['id']
@@ -35,26 +33,24 @@ def index(request):
 
     if request.user.is_authenticated:
         user_id = get_common_data.get_user_id_by_username(request.user)
-        lst_post_ids = []
         lst_followings = []
-        posts_with_most_views = PostView.objects.values('post_id').annotate(Count('post_id')).order_by(
-            '-post_id__count').values('post_id')
-        for post in posts_with_most_views:
-            lst_post_ids.append(post['post_id'])
-
-        post_views = Post.objects.filter(id__in=lst_post_ids)
+        lst_most_viewed_post = []
         followings = Follow.objects.filter(follower=int(user_id)).values('author', 'follower')
         for item in followings:
             lst_followings.append(item['author'])
-        post_likes = Post.objects.filter(author_id__in=lst_followings)
-        context = {'num_posts': num_posts, 'num_authors': num_authors, 'num_visits': num_visits,
-                   'author_details': author_details, 'fill_author_details': fill_author_details,
-                   'post_views': post_views, 'post_likes': post_likes}
+        post_likes = Post.objects.filter(author_id__in=lst_followings)[:15]
+
+        posts_with_views = PostView.objects.filter(viewed_at__gte=(datetime.now() - timedelta(days=14))).values(
+            'post_id').annotate(total=Count('post_id')).order_by('-total')[:25]
+        for post in posts_with_views:
+            lst_most_viewed_post.append(Post.objects.filter(id=post['post_id']))
+
+        context = {'author_details': author_details, 'fill_author_details': fill_author_details,
+                   'post_likes': post_likes, 'recent_posts': recent_posts, 'posts_with_views': lst_most_viewed_post}
 
     else:
-        context = {'num_posts': num_posts, 'num_authors': num_authors, 'num_visits': num_visits,
-                   'author_details': author_details, 'fill_author_details': fill_author_details,
-                   }
+        context = {'author_details': author_details, 'fill_author_details': fill_author_details,
+                   'recent_posts': recent_posts}
 
     return render(
         request,
@@ -65,7 +61,7 @@ def index(request):
 
 class PostCreate(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'post_content', 'summary', 'tag']
+    fields = ['title', 'post_content', 'summary', 'tag', 'display_image', 'image_caption']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -118,7 +114,10 @@ class PostDetailView(LoginRequiredMixin, DetailView):
         context['author'] = Author.objects.filter(username=ids).values('name', 'bio')
         author_obj = User.objects.get(id=int(get_common_data.get_user_id_by_username(self.request.user)))
         context['authors_posts'] = posts
-        context['username_id'] = ids
+        context['username_id'] = Author.objects.filter(id=get_common_data.get_author_id_by_username(self.object.author)).values('id')[0]['id']
+        print('usernameid')
+        print(Author.objects.filter(id=get_common_data.get_author_id_by_username(self.object.author)).values('id')[0]['id'])
+        print('usernameid')
 
         if not get_common_data.get_post_view_status(int(get_common_data.get_user_id_by_username(self.request.user)),
                                                     post_id):
@@ -144,14 +143,14 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
-    fields = ['title', 'post_content', 'summary', 'tag']
-    template_name = 'blog/post_update_form.html'
+    fields = ['title', 'post_content', 'summary', 'tag', 'display_image', 'image_caption']
+    template_name = 'blog/post_form.html'
     login_url = 'login'
 
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    success_url = reverse_lazy('profile')
+    success_url = reverse_lazy('index')
     login_url = 'login'
 
 
@@ -200,6 +199,7 @@ class AuthorDetailView(LoginRequiredMixin, DetailView):
         context['likes_given'] = PostLike.objects.filter(liked_by_id=int(self.object.username_id))
 
         likes_given_count = PostLike.objects.filter(liked_by_id=int(self.object.username_id)).count()
+        context['gender'] = get_common_data.get_gender_name_by_value(self.object.gender)
 
         return context
 
@@ -207,13 +207,14 @@ class AuthorDetailView(LoginRequiredMixin, DetailView):
 class AuthorUpdateView(LoginRequiredMixin, UpdateView):
     model = Author
     form_class = AuthorForm
-    template_name = 'blog/author_update_form.html'
+    template_name = 'blog/author_form.html'
     login_url = 'login'
 
 
-class AuthorListView(ListView):
+class AuthorListView(LoginRequiredMixin, ListView):
     model = Author
     paginate_by = 10
+    login_url = 'login'
 
 
 class AuthorSearchListView(AuthorListView):
@@ -359,14 +360,16 @@ def unlike_post(request, slug):
 def add_new_comment(request, slug):
     current_user = User.objects.get(id=int(get_common_data.get_user_id_by_username(request.user)))
     current_post = Post.objects.get(slug=slug)
-    PostComment.objects.create(post=current_post, comment_by=current_user, comment=request.POST['comment'], comment_at=timezone.now(), is_active=True)
+    PostComment.objects.create(post=current_post, comment_by=current_user, comment=request.POST['comment'],
+                               comment_at=timezone.now(), is_active=True)
     return redirect(request.META['HTTP_REFERER'])
 
 
-def add_new_reply(request,  pk):
+def add_new_reply(request, pk):
     current_user = User.objects.get(id=int(get_common_data.get_user_id_by_username(request.user)))
     current_comment = PostComment.objects.get(id=pk)
-    PostReply.objects.create(comment=current_comment, replied_by=current_user, reply=request.POST['reply'], replied_at=timezone.now(), is_active=True)
+    PostReply.objects.create(comment=current_comment, replied_by=current_user, reply=request.POST['reply'],
+                             replied_at=timezone.now(), is_active=True)
     return redirect(request.META['HTTP_REFERER'])
 
 
@@ -382,5 +385,3 @@ def delete_a_reply(request, pk):
     reply = PostReply.objects.filter(id=pk)
     reply.update(is_active=False)
     return redirect(request.META['HTTP_REFERER'])
-
-

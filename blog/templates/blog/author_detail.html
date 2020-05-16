@@ -48,42 +48,80 @@
     </div>
 </div>
 <br>
-<center>
+<div class="row">
+    <div class="col-md-4"></div>
     {% load static %}
-    <div>
+    <div class="col-md-4 text-center">
         <img src="{% static "images/profile.png" %}" class="mr-3" alt="{{ author.name }}"
         style="width:100px;height:100x;">
         <br>
         <br>
-        <h6 class="mt-0">{{ object.name }}</h6>
-
-
-    </div>
-</center>
-
-
-<div>
-    <center>
-        <hr>
-        <div class="btn-group" role="group" aria-label="Basic example">
-            {% if already_following %}
-            <a href="{% url 'unfollow' author_id %}" class="btn btn btn-outline-danger">Unfollow</a>
+        <h6 class="mt-0">{{ object.name }}
+        {% if already_following %}
+            <a href="{% url 'unfollow' author_id %}" class="btn btn-sm btn-outline-danger">Unfollow
+                <svg class="bi bi-person-dash" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M11 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10zm-9.995-.944v-.002.002zM1.022 13h9.956a.274.274 0 00.014-.002l.008-.002c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664a1.05 1.05 0 00.022.004zm9.974.056v-.002.002zM6 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0zm2 2.5a.5.5 0 01.5-.5h4a.5.5 0 010 1h-4a.5.5 0 01-.5-.5z"
+                          clip-rule="evenodd"/>
+                </svg></a>
 
             {% else %}
-            <a href="{% url 'new-follow' author_id %}" class="btn btn btn-outline-success">Follow</a>
-            {% endif %}
+            <a href="{% url 'new-follow' author_id %}" class="btn btn-sm btn-outline-success">Follow
+                <svg class="bi bi-person-plus" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M11 14s1 0 1-1-1-4-6-4-6 3-6 4 1 1 1 1h10zm-9.995-.944v-.002.002zM1.022 13h9.956a.274.274 0 00.014-.002l.008-.002c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664a1.05 1.05 0 00.022.004zm9.974.056v-.002.002zM6 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0zm4.5 0a.5.5 0 01.5.5v2a.5.5 0 01-.5.5h-2a.5.5 0 010-1H13V5.5a.5.5 0 01.5-.5z"
+                          clip-rule="evenodd"/>
+                    <path fill-rule="evenodd" d="M13 7.5a.5.5 0 01.5-.5h2a.5.5 0 010 1H14v1.5a.5.5 0 01-1 0v-2z"
+                          clip-rule="evenodd"/>
+                </svg></a>
+            {% endif %}</h6>
 
+    </div>
+    <div class="col-md-4">
 
-            <button class="btn btn btn-outline-primary" onclick="openPage('About', this, '')">About</button>
-            <button class="btn btn btn-outline-primary" onclick="openPage('Posts', this, '')" id="defaultOpen">Posts
-            </button>
-            <button class="btn btn btn-outline-primary" onclick="openPage('Followers', this, '')">Followers</button>
-            <button class="btn btn btn-outline-primary" onclick="openPage('Followings', this, '')">Followings</button>
-            <button class="btn btn btn-outline-primary" onclick="openPage('Likes', this, '')">Likes</button>
-
-        </div>
-    </center>
+    </div>
 </div>
+
+
+<hr>
+
+
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-6">
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav justify-content-between">
+
+                    <a class="nav-item nav-link" onclick="openPage('About', this, '')" id="defaultOpen">About</a>
+                    <a class="nav-item nav-link" onclick="openPage('Posts', this, '')">
+                        Posts
+                    </a>
+                    <a class="nav-item nav-link" onclick="openPage('Followers', this, '')">Followers
+                    </a>
+                    <a class="nav-item nav-link" onclick="openPage('Followings', this, '')">Followings
+                    </a>
+                    <a class="nav-item nav-link" onclick="openPage('Likes', this, '')">Likes</a>
+
+                </div>
+            </div>
+
+        </nav>
+
+    </div>
+    <div class="col-md-2"></div>
+
+</div>
+
 <br>
 <div id="About" class="tabcontent">
 
@@ -110,8 +148,10 @@
             <div class="card bg-light mb-3" style="max-width: 18rem;">
                 <div class="card-header">{{ author.name }}</div>
                 <div class="card-body">
-                    <h6 class="card-title">Email {{ author.email }}</h6>
-                    <h6 class="card-title">Gender {{ author.gender }}</h6>
+                    <h6 class="card-title">Name <span class="text-muted">{{ author.name }}</span></h6>
+                    <h6 class="card-title">Username <span class="text-muted">{{ author.username }}</span></h6>
+                    <h6 class="card-title">Email <span class="text-muted">{{ author.email }}</span></h6>
+                    <h6 class="card-title">Gender<span class="text-muted"> {{ gender }}</span></h6>
                 </div>
             </div>
         </div>
@@ -159,13 +199,7 @@
 
                 </div>
                 <div class="col-auto d-none d-lg-block">
-                    <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                         preserveAspectRatio="xMidYMid slice" focusable="false" role="img"
-                         aria-label="Placeholder: Thumbnail">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#55595c"/>
-                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                    </svg>
+                     <img class="bd-placeholder-img"  width="200" height="250" src="\media\{{ p.display_image }}" alt="Card image cap">
                 </div>
 
             </div>
@@ -335,13 +369,7 @@
 
                     </div>
                     <div class="col-auto d-none d-lg-block">
-                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                             preserveAspectRatio="xMidYMid slice" focusable="false" role="img"
-                             aria-label="Placeholder: Thumbnail">
-                            <title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="#55595c"/>
-                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                        </svg>
+                        <img class="bd-placeholder-img"  width="200" height="250" src="\media\{{ p.post.display_image }}" alt="Card image cap">
                     </div>
 
                 </div>

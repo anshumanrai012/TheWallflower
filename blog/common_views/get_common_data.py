@@ -1,5 +1,7 @@
 from blog.models import Post, Author, Tag, Follow, PostLike, PostView, Follow, PostLike, PostComment
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 GENDER_CHOICES = {'m': 'Male', 'f': 'Female', 'o': 'Others'}
 
@@ -25,6 +27,12 @@ def get_tag_id_by_name(name):
 def get_user_id_by_username(u_name):
     user_id = User.objects.filter(username=u_name).values('id')[0]['id']
     return user_id
+
+
+def get_author_id_by_username(u_name):
+    user_id = get_user_id_by_username(u_name)
+    author_id = Author.objects.filter(username_id=user_id).values('id')[0]['id']
+    return author_id
 
 
 def get_views_count_by_post(post_id):
@@ -78,5 +86,11 @@ def get_comments_by_post_id(post_id):
     return posts
 
 
+def get_recent_post():
+    recent_posts = Post.objects.filter(created_at__gte=(datetime.now() - timedelta(days=5)), status='p').order_by(
+        '-created_at')[:25]
+    return recent_posts
 
 
+def get_tranding_posts():
+    tranding_posts = Post.objects.get()
