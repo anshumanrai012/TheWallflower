@@ -17,11 +17,10 @@ from datetime import datetime, timedelta
 def index(request):
     author_details = None
     recent_posts = get_common_data.get_recent_post()
+    all_tags = Tag.objects.all().order_by('name')
 
     if request.user.is_authenticated:
-        user_id = User.objects.filter(username=request.user).values('id')[0]['id']
-        author_details = Author.objects.filter(username_id=user_id)
-        author_details_count = Author.objects.filter(username_id=user_id).count()
+        author_details_count = get_common_data.check_user_data_in_author_table(request)
 
         if author_details_count == 1:
             fill_author_details = False
@@ -46,11 +45,12 @@ def index(request):
             lst_most_viewed_post.append(Post.objects.filter(id=post['post_id']))
 
         context = {'author_details': author_details, 'fill_author_details': fill_author_details,
-                   'post_likes': post_likes, 'recent_posts': recent_posts, 'posts_with_views': lst_most_viewed_post}
+                   'post_likes': post_likes, 'recent_posts': recent_posts, 'posts_with_views': lst_most_viewed_post,
+                   'all_tags': all_tags}
 
     else:
         context = {'author_details': author_details, 'fill_author_details': fill_author_details,
-                   'recent_posts': recent_posts}
+                   'recent_posts': recent_posts, 'tags': all_tags}
 
     return render(
         request,
@@ -103,21 +103,23 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         is_liked = False
+        is_archived = False
         context = super(PostDetailView, self).get_context_data(**kwargs)
         posts = Post.objects.filter(author=self.object.author).values('id', 'author', 'title', 'slug')
         posts_obj = Post.objects.get(id=self.object.pk)
         post_id = Post.objects.filter(id=self.object.pk).values('id', 'author', 'title', 'slug')[0]['id']
+        if Post.objects.filter(id=post_id).values('status')[0]['status']=='a':
+            is_archived = True
 
         for post in posts:
             ids = post['author']
 
-        context['author'] = Author.objects.filter(username=ids).values('name', 'bio')
+        context['author'] = Author.objects.filter(username=ids).values('name', 'bio', 'picture')
         author_obj = User.objects.get(id=int(get_common_data.get_user_id_by_username(self.request.user)))
         context['authors_posts'] = posts
-        context['username_id'] = Author.objects.filter(id=get_common_data.get_author_id_by_username(self.object.author)).values('id')[0]['id']
-        print('usernameid')
-        print(Author.objects.filter(id=get_common_data.get_author_id_by_username(self.object.author)).values('id')[0]['id'])
-        print('usernameid')
+        context['username_id'] = \
+            Author.objects.filter(id=get_common_data.get_author_id_by_username(self.object.author)).values('id')[0][
+                'id']
 
         if not get_common_data.get_post_view_status(int(get_common_data.get_user_id_by_username(self.request.user)),
                                                     post_id):
@@ -137,6 +139,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
             dict_replies[comment['id']] = PostReply.objects.filter(comment_id=comment['id'], is_active=True)
 
         context['dict_replies'] = dict_replies
+        context['is_archived'] = is_archived
 
         return context
 
@@ -156,7 +159,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 
 class AuthorCreate(LoginRequiredMixin, CreateView):
     model = Author
-    fields = ['name', 'email', 'bio', 'gender']
+    fields = ['name', 'email', 'bio', 'gender', 'picture']
     login_url = 'login'
 
     def form_valid(self, form):
@@ -213,7 +216,7 @@ class AuthorUpdateView(LoginRequiredMixin, UpdateView):
 
 class AuthorListView(LoginRequiredMixin, ListView):
     model = Author
-    paginate_by = 10
+    paginate_by = 12
     login_url = 'login'
 
 
@@ -236,10 +239,10 @@ class AuthorSearchListView(AuthorListView):
 
 class TagListView(ListView):
     model = Tag
-    paginate_by = 10
+    paginate_by = 18
 
 
-class TagDetailView(DetailView):
+class TagDetailView(LoginRequiredMixin, DetailView):
     model = Tag
 
 
@@ -250,45 +253,56 @@ def get_archives_by_author(request):
 
 
 def user_profile(request, user):
-    lst_followers = []
-    lst_followings = []
-    lst_post_ids = []
-    user_id = get_common_data.get_user_id_by_username(request.user)
-    posts = Post.objects.filter(author_id=user_id, status='p')
-    num_posts = Post.objects.filter(author_id=user_id).count()
-    author = Author.objects.filter(username_id=user_id).values('id', 'name', 'bio', 'email', 'gender')
-    gender = get_common_data.get_gender_name_by_value(author[0]['gender'])
-    author_id = author[0]['id']
-    archived_posts = get_archives_by_author(request)
-    followers = Follow.objects.filter(author=int(user_id)).values('author', 'follower')
-    for item in followers:
-        lst_followers.append(item['follower'])
+    author_details_count = get_common_data.check_user_data_in_author_table(request)
+    context = {}
+    if author_details_count == 1:
+        fill_author_details = False
+        lst_followers = []
+        lst_followings = []
+        lst_post_ids = []
+        user_id = get_common_data.get_user_id_by_username(request.user)
+        posts = Post.objects.filter(author_id=user_id, status='p')
+        num_posts = Post.objects.filter(author_id=user_id).count()
+        author = Author.objects.filter(username_id=user_id).values('id', 'name', 'bio', 'email', 'gender', 'picture')
+        gender = get_common_data.get_gender_name_by_value(author[0]['gender'])
+        author_id = author[0]['id']
+        archived_posts = get_archives_by_author(request)
+        followers = Follow.objects.filter(author=int(user_id)).values('author', 'follower')
+        for item in followers:
+            lst_followers.append(item['follower'])
 
-    followers_author_details = Author.objects.filter(username_id__in=lst_followers)
-    followings = Follow.objects.filter(follower=int(user_id)).values('author', 'follower')
-    for item in followings:
-        lst_followings.append(item['author'])
-    followings_author_details = Author.objects.filter(username_id__in=lst_followings)
-    followers_count = Follow.objects.filter(author=int(user_id)).count()
-    followings_count = Follow.objects.filter(follower=int(user_id)).count()
-    total_view_count = get_common_data.get_views_count_by_author(user_id)
-    liked_posts = PostLike.objects.filter(liked_by_id=user_id)
-    likes_given_count = PostLike.objects.filter(liked_by_id=user_id).count()
+        followers_author_details = Author.objects.filter(username_id__in=lst_followers)
+        followings = Follow.objects.filter(follower=int(user_id)).values('author', 'follower')
+        for item in followings:
+            lst_followings.append(item['author'])
+        followings_author_details = Author.objects.filter(username_id__in=lst_followings)
+        followers_count = Follow.objects.filter(author=int(user_id)).count()
+        followings_count = Follow.objects.filter(follower=int(user_id)).count()
+        total_view_count = get_common_data.get_views_count_by_author(user_id)
+        liked_posts = PostLike.objects.filter(liked_by_id=user_id)
+        likes_given_count = PostLike.objects.filter(liked_by_id=user_id).count()
+        template = 'blog/profile.html'
+        context = {'num_posts': num_posts, 'posts': posts, 'author': author, 'archived_posts': archived_posts,
+                   'gender': gender, 'author_id': author_id, 'followers': followers_author_details,
+                   'followings': followings_author_details,
+                   'total_view_count': total_view_count, 'followers_count': followers_count,
+                   'followings_count': followings_count, 'liked_posts': liked_posts,
+                   'likes_given_count': likes_given_count, 'fill_author_details': fill_author_details}
+    else:
+        fill_author_details = True
+        template = 'index.html'
+        context = {'fill_author_details': fill_author_details}
 
     return render(
         request,
-        'blog/profile.html',
-        context={'num_posts': num_posts, 'posts': posts, 'author': author, 'archived_posts': archived_posts,
-                 'gender': gender, 'author_id': author_id, 'followers': followers_author_details,
-                 'followings': followings_author_details,
-                 'total_view_count': total_view_count, 'followers_count': followers_count,
-                 'followings_count': followings_count, 'liked_posts': liked_posts,
-                 'likes_given_count': likes_given_count},
+        template,
+        context,
     )
 
 
 def get_post_by_tag(request, item):
     posts_under_tag = []
+    thumbnail = Tag.objects.filter(name=item).values('thumbnail')[0]['thumbnail']
     tag_id = get_common_data.get_tag_id_by_name(item)
     post_ids = Post.tag.through.objects.filter(tag_id=tag_id).values('post_id')
     for val in post_ids:
@@ -299,7 +313,7 @@ def get_post_by_tag(request, item):
     return render(
         request,
         'blog/posts_by_tag.html',
-        context={'posts_under_tag': posts_under_tag, 'tag_name': item},
+        context={'posts_under_tag': posts_under_tag, 'tag_name': item, 'thumbnail': thumbnail},
     )
 
 

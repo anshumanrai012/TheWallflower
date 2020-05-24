@@ -28,8 +28,8 @@
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../django-locallibrary" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../RestAPI-Django" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -68,14 +68,14 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="463" y="125" key="FileChooserDialogImpl" timestamp="1588396903759">
+    <state x="463" y="125" key="FileChooserDialogImpl" timestamp="1589717081919">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="463" y="125" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1588396903759" />
-    <state x="184" y="12" key="SettingsEditor" timestamp="1587883593965">
+    <state x="463" y="125" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1589717081919" />
+    <state x="184" y="12" key="SettingsEditor" timestamp="1589697189831">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="184" y="12" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1587883593965" />
+    <state x="184" y="12" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1589697189831" />
     <state x="346" y="59" width="672" height="678" key="search.everywhere.popup" timestamp="1588422088519">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

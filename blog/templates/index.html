@@ -1,156 +1,193 @@
 {% extends "base.html" %}
 {% block title %}The Wallflower - Home{% endblock %}
 {% block content %}
-
 {% if fill_author_details %}
 <div class="alert alert-danger" role="alert">
-  <center style="font-size:13px;"> Hi {{ user }} ! Welcome. Your account is not activated. Click <a
-    href="{% url 'activate-account' %}">here</a>
-    to activate. Please note that most of the features will remain disabled until you activate your account.
-  </center>
+   <center style="font-size:13px;"> Hi {{ user }} ! Welcome. Your account is not activated. Click <a
+      href="{% url 'activate-account' %}">here</a>
+      to activate. Please note that most of the features will remain disabled until you activate your account.
+   </center>
 </div>
 {% endif %}
 {% if user.is_authenticated %}
+
 <div class="container">
-  <div class="row">
-    <!-- Blog Entries Column -->
-    <div class="col-md-8">
-      <h3 class="my-4">Recent Posts
-      </h3>
-      {% if recent_posts %}
-      {% for post in recent_posts %}
-      <div class="card mb-4">
-        <img class="card-img-top box" width="60%" height="40%" src="\media\{{ post.display_image }}" alt="Card image cap">
-        <div class="card-body">
-          <h4 class="card-title">{{ post.title }}</h4>
-          <p class="card-text">{{ post.summary }}</p>
-          <a href="{% url 'post-detail' post.slug %}" class="btn btn-sm">Continue reading... &#x1f56e;</a>
-        </div>
-        <div class="card-footer text-muted">
-          	&#128197; {{ post.created_at }} by
-          <a href="">{{ post.author }}</a> in
-          <span style="color:blue"> {{ post.tag.all|join:", " }}</span>
-        </div>
-      </div>
-      {% endfor %}
-      {% else %}
-      <p>Oops! Seems like none has posted a thing since last week.</p>
-      {% endif %}
-    </div>
-    <!-- Sidebar Widgets Column -->
-    <div class="col-md-4">
-      <!-- Search Widget -->
+   <div class="row">
+      <div class="col-md-3">
+         {% if all_tags %}
+         <div class="card my-4">
+            <div style="background:#fafafa" class="card-body">
 
+               <ol style="line-height:250%" class="list-unstyled mb-0">
+                  {% for tag in all_tags %}
+                  <span style="font-size:15px;">
+                     <li>
+                        <img src="\media\{{ tag.thumbnail }}" height="25px" width="25px">
+                        <a style="text-decoration:none;" href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>
+                     </li>
+                  </span>
+                  {% endfor %}
+               </ol>
 
-      <div class="card my-4">
-        <h6 class="card-header">Quick Search</h6>
-        <div class="card-body">
-          <form id="mySearchForm" action="{% url 'post-search-list-view' %}"  method="get">
-            <div class="input-group">
-               <select id="searchCat">
-                  <option value="post">Search Criteria</option>
-                  <option value="post">Post</option>
-                  <option value="author">Author</option>
-                  <option value="topic">Topic</option>
-               </select>
-              <input type="text" class="form-control" name="qery" placeholder="Search post, author or topic">
             </div>
-          </form>
-        </div>
+         </div>
+         {% endif %}
       </div>
+      <!-- Blog Entries Column -->
+      <div class="col-md-5">
+         <div class="text-center">
 
+            <div class="card-body">
+               <h5>Recently Added</h5>
+               <div class="spinner-grow spinner-grow-sm text-danger" role="status">
+                  <span class="sr-only">Loading...</span>
+               </div>
+                <div class="spinner-grow spinner-grow-sm text-success" role="status">
+                  <span class="sr-only">Loading...</span>
+               </div>
+               <div class="spinner-grow spinner-grow-sm text-warning" role="status">
+                  <span class="sr-only">Loading...</span>
+               </div>
 
-      <!-- Categories Widget -->
-      <!-- Side Widget -->
-      <!-- Side Widget -->
-      <div class="card my-4">
-        <h5 class="card-header">
-          Trending &#128200;
-        </h5>
-        <div class="card-body">
-          {% if posts_with_views %}
-          <ol class="list-unstyled mb-0">
-            {% for post in posts_with_views %}
-            <span style="font-size:15px;">
-              <li>
-                <img class="rounded-circle" src="\media\{{ post.0.display_image }}"  height="20px" width="20px">
-                <a style="text-decoration:none"  href="{% url 'post-detail' post.0.slug %}">{{ post.0.title }}</a>
-              </li>
-            </span>
-            {% endfor %}
-          </ol>
-          {% else %}
-          <p>Seems like either you are not following anyone or people you follow haven't posted anything yet. Suggestion here is to follow some authors to see
-            your customized list.
-          </p>
-          {% endif %}
-        </div>
+                <div class="spinner-grow spinner-grow-sm text-primary" role="status">
+                  <span class="sr-only">Loading...</span>
+               </div>
+            </div>
+         </div>
+         {% if recent_posts %}
+         {% for post in recent_posts %}
+         <div class="card mb-4">
+            <img class="card-img-top box" width="60%" height="40%" src="\media\{{ post.display_image }}"
+               alt="Card image cap">
+            <div class="card-body">
+               <h5 class="card-title">{{ post.title }}</h5>
+               <p class="card-text">{{ post.summary }}</p>
+               <a href="{% url 'post-detail' post.slug %}" class="btn btn-sm">Continue reading... &#x1f56e;</a>
+            </div>
+            <div class="card-footer text-muted">
+               &#128197; {{ post.created_at }} by
+               <a href="{% url 'author-detail' post.author.pk %}">{{ post.author }}</a> in
+               <span style="color:blue"> {{ post.tag.all|join:", " }}</span>
+            </div>
+         </div>
+         {% endfor %}
+         {% else %}
+         <p>Oops! Seems like none has posted a thing since last week.</p>
+         {% endif %}
       </div>
-      <div class="card my-4">
-        <h5 class="card-header">
-          Hot picks for you &#128293;
-        </h5>
-        <div class="card-body">
-          {% if post_likes %}
-          <ol class="list-unstyled mb-0">
-            {% for post in post_likes %}
-            <span style="font-size:15px;">
-              <li>
-                <img class="rounded-circle" src="\media\{{ post.display_image }}"  height="20px" width="20px">
-                <a style="text-decoration:none;"  href="{% url 'post-detail' post.slug %}">{{ post.title }}</a>
-              </li>
-            </span>
-            {% endfor %}
-          </ol>
-          {% else %}
-          <p>Seems like either you are not following anyone or people you follow haven't posted anything yet. Suggestion here is to follow some authors to see
-            your customized list.
-          </p>
-          {% endif %}
-        </div>
+      <!-- Sidebar Widgets Column -->
+      <div class="col-md-4">
+         <!-- Search Widget -->
+         <div class="card my-4">
+            <h6 class="card-header">Quick Search &#x1F50E;</h6>
+            <div class="card-body">
+               <form id="mySearchForm" action="{% url 'post-search-list-view' %}" method="get">
+                  <div class="input-group">
+                     <select id="searchCat">
+                        <option value="post">Search Criteria</option>
+                        <option value="post">Post</option>
+                        <option value="author">Author</option>
+                        <option value="topic">Topic</option>
+                     </select>
+                     <input type="text" class="form-control" name="qery"
+                        placeholder="Search post, author or topic">
+                  </div>
+               </form>
+            </div>
+         </div>
+         <!-- Categories Widget -->
+         <!-- Side Widget -->
+         <!-- Side Widget -->
+         <div class="card my-4">
+            <h5 class="card-header">
+               Trending &#128200;
+            </h5>
+            <div style="background:#fafafa" class="card-body">
+               {% if posts_with_views %}
+               <ol style="line-height:200%" class="list-unstyled mb-0">
+                  {% for post in posts_with_views %}
+                  <span style="font-size:15px;">
+                     <li>
+                        <img class="rounded-circle" src="\media\{{ post.0.display_image }}" height="20px" width="20px">
+                        <a style="text-decoration:none" href="{% url 'post-detail' post.0.slug %}">{{ post.0.title }}</a>
+                     </li>
+                  </span>
+                  {% endfor %}
+               </ol>
+               {% else %}
+               <p>Seems like either your account is not activated or no one has posted thing since last week.
+               </p>
+               {% endif %}
+            </div>
+         </div>
+         <div class="card my-4">
+            <h5 class="card-header">
+               Hot picks for you &#128293;
+            </h5>
+            <div style="background:#fafafa" class="card-body">
+               {% if post_likes %}
+               <ol style="line-height:200%" class="list-unstyled mb-0">
+                  {% for post in post_likes %}
+                  <span style="font-size:15px;">
+                     <li>
+                        <img class="rounded-circle" src="\media\{{ post.display_image }}" height="20px" width="20px">
+                        <a style="text-decoration:none;" href="{% url 'post-detail' post.slug %}">{{ post.title }}</a>
+                     </li>
+                  </span>
+                  {% endfor %}
+               </ol>
+               {% else %}
+               <p>Seems like either you are not following anyone or people you follow haven't posted anything yet.
+                  Suggestion here is to follow some authors to see
+                  your customized list.
+               </p>
+               {% endif %}
+            </div>
+         </div>
       </div>
-    </div>
-
-  </div>
-  <!-- /.row -->
+   </div>
+   <!-- /.row -->
 </div>
 {% else %}
-<h3>Login</h3>
-<br>
-{% if form.errors %}
-{% for field in form %}
-{% for error in field.errors %}
-<div class="alert alert-danger">
-  <strong>{{ error|escape }}</strong>
+<div class="row justify-content-center align-items-center">
+   <div class="col-md-6">
+      <div class="col-md-12">
+         <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <h3 class="text-center text-info">Login</h3>
+            {% if form.errors %}
+            {% for field in form %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger">
+               <p>{{ error|escape }}</p>
+            </div>
+            {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+               <h6>{{ error|escape }}</h6>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <div class="form-group">
+               <label for="username" class="text-info">Username:</label><br>
+               <input required type="text" name="username" id="username" class="form-control">
+            </div>
+            <div class="form-group">
+               <label for="password" class="text-info">Password:</label><br>
+               <input required type="password" name="password" id="password" class="form-control">
+            </div>
+            <div class="form-group">
+               <label for="remember-me" class="text-info"><span>Remember me</span> <span><input
+                  id="remember-me" name="remember-me" type="checkbox"></span></label><br>
+               <input type="submit" name="submit" class="btn btn-info btn-md" value="submit">
+            </div>
+            <div class="text-right">
+               <a href="{% url 'signup'%}" class="text-info">Sign Up</a>
+            </div>
+         </form>
+      </div>
+   </div>
 </div>
-{% endfor %}
-{% endfor %}
-{% for error in form.non_field_errors %}
-<div class="alert alert-danger">
-  <strong>{{ error|escape }}</strong>
-</div>
-{% endfor %}
 {% endif %}
-<form method="post" action="{% url 'login' %}">
-  {% csrf_token %}
-  <div class="form-row align-items-center">
-    <div class="col-auto">
-      <label class="sr-only" for="inlineFormInput">Username</label>
-      <input type="text" class="form-control mb-2" id="inlineFormInput" name="username" placeholder="username"
-        required>
-    </div>
-    <div class="col-auto">
-      <label class="sr-only" for="inlineFormInput">Username</label>
-      <input type="password" class="form-control mb-2" id="inlineFormInputPassword" name="password"
-        placeholder="password" required>
-    </div>
-    <div class="col-auto">
-      <button type="submit" name="submit" class="btn btn-primary mb-2">Login</button>
-    </div>
-  </div>
-</form>
-<br>
-<p>New user? <a href="{% url 'signup'%}">Signup.</a></p>
-{% endif %}
-
 {% endblock %}

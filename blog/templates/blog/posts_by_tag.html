@@ -7,11 +7,7 @@
     </div>
     <div class="col-md-4">
         <center>
-           <svg class="bi bi-image" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M14.002 2h-12a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1V3a1 1 0 00-1-1zm-12-1a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V3a2 2 0 00-2-2h-12z" clip-rule="evenodd"/>
-  <path d="M10.648 7.646a.5.5 0 01.577-.093L15.002 9.5V14h-14v-2l2.646-2.354a.5.5 0 01.63-.062l2.66 1.773 3.71-3.71z"/>
-  <path fill-rule="evenodd" d="M4.502 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" clip-rule="evenodd"/>
-</svg>
+            <img src="\media\{{ thumbnail }}" height="30px" width="30px"><br>
             {{tag_name}}
         </center>
     </div>
@@ -34,13 +30,15 @@
         <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
             <div class="col p-4 d-flex flex-column position-static">
                 <strong class="d-inline-block mb-2 text-primary">{{ post.0.tag.all|join:", " }}</strong>
-                <a class="text-dark" href="{% url 'post-detail' post.0.slug %}"><h5 class="mb-0">{{ post.0.title }}</h5></a>
+                <a class="text-dark" href="{% url 'post-detail' post.0.slug %}"><h5 class="mb-0">{{ post.0.title }}</h5>
+                </a>
                 <div class="mb-1 text-muted">{{ post.0.created_at }}</div>
                 <p class="card-text mb-auto"><i style="font-size:13px;">{{ post.0.summary|truncatechars:100 }}</i></p>
                 <a href="{% url 'post-detail' post.0.slug %}" class="stretched-link">Continue reading</a>
             </div>
             <div class="col-auto d-none d-lg-block">
-                <img class="bd-placeholder-img"  width="200" height="250" src="\media\{{ post.0.display_image }}" alt="Card image cap">
+                <img class="bd-placeholder-img" width="200" height="250" src="\media\{{ post.0.display_image }}"
+                     alt="Card image cap">
             </div>
         </div>
     </div>

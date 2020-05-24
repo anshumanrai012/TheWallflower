@@ -87,10 +87,13 @@ def get_comments_by_post_id(post_id):
 
 
 def get_recent_post():
-    recent_posts = Post.objects.filter(created_at__gte=(datetime.now() - timedelta(days=5)), status='p').order_by(
+    recent_posts = Post.objects.filter(created_at__gte=(datetime.now() - timedelta(days=30)), status='p').order_by(
         '-created_at')[:25]
     return recent_posts
 
 
-def get_tranding_posts():
-    tranding_posts = Post.objects.get()
+def check_user_data_in_author_table(request):
+    user_id = User.objects.filter(username=request.user).values('id')[0]['id']
+    author_details = Author.objects.filter(username_id=user_id)
+    author_details_count = Author.objects.filter(username_id=user_id).count()
+    return author_details_count

@@ -28,6 +28,7 @@ GENDER_CHOICES = (
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
+    thumbnail = models.ImageField(upload_to='media/tags')
 
     def __str__(self):
         return self.name
@@ -37,19 +38,21 @@ class Tag(models.Model):
 
 
 class Post(models.Model):
-    title = models.CharField(max_length=1000)
+    title = models.CharField(max_length=100)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=1000, blank=True, null=True)
-    post_content = models.TextField(max_length=1000000)
+    post_content = models.TextField(max_length=100000)
     summary = models.CharField(max_length=1000)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='p')
-    tag = models.ManyToManyField(Tag, null=True, blank=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='p')
+    tag = models.ManyToManyField(Tag, null=True, blank=True, help_text='Hold control while selecting multiple tags.')
     archived_at = models.DateTimeField(null=True, blank=True)
     drafted_at = models.DateTimeField(blank=True, null=True)
-    display_image = models.ImageField(upload_to='media')
-    image_caption = models.CharField(max_length=200, null=True, blank=True)
+    display_image = models.ImageField(upload_to='media',
+                                      help_text='This image will be displayed as thumbnail for this article.'
+                                                ' Try to choose a relevant image describing the content of this article.')
+    image_caption = models.CharField(max_length=100, null=True, blank=True, help_text='Caption for image attached')
 
     def get_absolute_url(self):
         return reverse('post-detail', args=[str(self.slug)])
@@ -73,11 +76,12 @@ class Author(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True)
     email = models.EmailField(null=True)
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     bio = models.TextField(max_length=2000)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
+    picture = models.ImageField(upload_to='media/profiles')
 
     def get_absolute_url(self):
         return reverse('author-detail', args=[str(self.id)])
@@ -90,7 +94,6 @@ class Author(models.Model):
 
     class Meta:
         ordering = ['name']
-
 
 
 class PostLike(models.Model):

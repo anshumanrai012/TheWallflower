@@ -32,7 +32,7 @@
         {% if field.id_for_label == 'id_post_content' %}
 
         {% endif %}
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <label for="{{ field.id_for_label }}">{{ field.label }}<span style="color:#fcba03; font-size:12px"> {{ field.help_text }} </span></label>
         {{ field|add_class:'form-control' }}
         {% for error in field.errors %}
         <span style="color:red" class="help-block">{{ error }}</span>
