@@ -98,6 +98,7 @@
                <a class="nav-item nav-link" onclick="openPage('Followings', this, '')">{{ followings_count }}&nbsp;Followings</a>
                <a class="nav-item nav-link" onclick="openPage('Likes', this, '')">{{ liked_posts.count }}&nbsp;Likes</a>
                <a class="nav-item nav-link" onclick="openPage('Archives', this, '')">{{ archived_posts.count }}&nbsp;Archives</a>
+               <a class="nav-item nav-link" onclick="openPage('Archives', this, '')">Bookmarks</a>
                <a class="nav-item nav-link" onclick="openPage('Archives', this, '')">Drafts</a>
             </div>
          </div>
@@ -499,13 +500,5 @@
    }
    // Get the element with id="defaultOpen" and click on it
    document.getElementById("defaultOpen").click();
-
-
-
-
-
-
-
-
 </script>
 {% endblock %}

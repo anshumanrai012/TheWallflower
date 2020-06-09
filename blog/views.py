@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView, DeleteView, UpdateView
-from .models import Post, Author, Tag, Follow, PostView, PostLike, PostComment, PostReply
+from .models import Post, Author, Tag, Follow, PostView, PostLike, PostComment, PostReply, BookmarkPost
 from django.contrib.auth.mixins import LoginRequiredMixin
 import operator
 from django.db.models import Q, Count
@@ -398,4 +398,11 @@ def delete_a_comment(request, pk):
 def delete_a_reply(request, pk):
     reply = PostReply.objects.filter(id=pk)
     reply.update(is_active=False)
+    return redirect(request.META['HTTP_REFERER'])
+
+
+def bookmark_a_post(request, pk):
+    current_user = User.objects.get(id=int(get_common_data.get_user_id_by_username(request.user)))
+    current_post = Post.objects.get(id=pk)
+    BookmarkPost.objects.create(post=current_post, bookmarked_by=current_user)
     return redirect(request.META['HTTP_REFERER'])

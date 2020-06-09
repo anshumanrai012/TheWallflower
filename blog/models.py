@@ -148,3 +148,11 @@ class PostView(models.Model):
 
     def __str__(self):
         return str(self.post)
+
+
+class BookmarkPost(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    bookmarked_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.post)

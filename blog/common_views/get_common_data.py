@@ -1,4 +1,4 @@
-from blog.models import Post, Author, Tag, Follow, PostLike, PostView, Follow, PostLike, PostComment
+from blog.models import Post, Author, Tag, Follow, PostLike, PostView, Follow, PostLike, PostComment, BookmarkPost
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -97,3 +97,9 @@ def check_user_data_in_author_table(request):
     author_details = Author.objects.filter(username_id=user_id)
     author_details_count = Author.objects.filter(username_id=user_id).count()
     return author_details_count
+
+
+def get_bookmarked_post_by_user(request):
+    posts = BookmarkPost.objects.filter(user=request.user)
+    return posts
+

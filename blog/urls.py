@@ -8,11 +8,12 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
 ]
+
 # URLs for Post
 urlpatterns += [
     path('blog/posts', views.PostListView.as_view(), name='all-posts'),
-    path('post/<slug:slug>/', views.PostDetailView.as_view(), name='post-detail'),
-    path('post/new-post', views.PostCreate.as_view(), name='new-post'),
+    path('blog/post/<slug:slug>/', views.PostDetailView.as_view(), name='post-detail'),
+    path('blog/post/new-post', views.PostCreate.as_view(), name='new-post'),
     path('blog/posts/search/', views.PostSearchListView.as_view(), name='post-search-list-view'),
     path('blog/tags/', views.TagListView.as_view(), name='all-tags'),
     path('blog/archives/', views.get_all_archives, name='archives'),
@@ -22,6 +23,7 @@ urlpatterns += [
     path('post/comment/<int:pk>/', views.add_new_reply, name='add-reply'),
     path('post/comment/<int:pk>/delete', views.delete_a_comment, name='delete-comment'),
     path('post/reply/<int:pk>/delete', views.delete_a_reply, name='delete-reply'),
+    path('post/bookmark/<int:pk>/', views.bookmark_a_post, name='bookmark-post')
 
 ]
 

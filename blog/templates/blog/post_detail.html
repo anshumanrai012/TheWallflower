@@ -25,7 +25,7 @@
                      <a type="button" class="btn btn-sm" data-toggle="popover"
                         data-content="
                         {% if object.author == user %}<div><a href='{% url 'update-post' object.pk %}'> Edit Post</a></div></div><a href='{% url 'delete-post' object.pk %}'>Delete Post</a></div>{% if is_archived %}<div><a href='{% url 'mark-restore' object.pk %}'>Restore Post</a></div>{% else %}<div><a href='{% url 'mark-archive' object.pk %}'>Archive Post</a></div>{% endif %}<hr>{% endif %}
-                        <div><a href='{% url 'update-post' object.pk %}'>Bookmark this Post</a></div><div><a href='{% url 'update-post' object.pk %}'>Share</a></div><div><a href='{% url 'update-post' object.pk %}'>Report Post</a></div>"
+                        <div><a href='{% url 'bookmark-post' object.pk %}'>Bookmark this Post</a></div><div><a href='{% url 'update-post' object.pk %}'>Share</a></div><div><a href='{% url 'update-post' object.pk %}'>Report Post</a></div>"
                         data-html="true">
                         <svg class="bi bi-three-dots" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
                            xmlns="http://www.w3.org/2000/svg">

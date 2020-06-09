@@ -32,14 +32,14 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Django\Projects\thewallflower\blog\Views" />
-      <recent name="D:\Django\Projects\thewallflower\blog\templates\blog" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Django\Projects\thewallflower\blog\templates\blog" />
       <recent name="D:\Django\Projects\thewallflower\blog\templates" />
       <recent name="D:\Django\Projects\thewallflower\templates\registration" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Django\Projects\thewallflower\blog\Views" />
+      <recent name="D:\Django\Projects\thewallflower\blog\templates\blog" />
     </key>
   </component>
   <component name="ServiceViewManager">
